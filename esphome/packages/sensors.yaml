@@ -1,0 +1,141 @@
+# =============================================================================
+# 工作原理：
+# 1. 每个传感器订阅一个 Home Assistant 实体（开关、传感器等）
+# 2. 当该实体状态变化时，"on_state" 或 "on_value" 触发器被激活
+# 3. 触发器更新 lvgl.yaml 中对应的按钮，显示新状态
+#
+# 核心概念：
+# - "platform: homeassistant" = 直接从 Home Assistant 读取状态
+# - "platform: template" = 使用代码（lambda）计算值
+# - "entity_id:" = 要监控的 Home Assistant 设备/实体
+# - "id:" = 唯一名称，用于在 ESPHome 其他地方引用此传感器
+# - "trigger_on_initial_state: true" = 设备启动时立即更新按钮
+# - "lvgl.widget.update" = 更改屏幕上按钮的外观
+# - "checked: !lambda return x;" = x 是传感器的布尔状态（true/false）
+#
+# 与 lvgl.yaml 的关系：
+# 此文件中的每个传感器在 lvgl.yaml 中都有对应按钮：
+#   - 此文件 **读取** Home Assistant 状态 → 更新按钮外观
+#   - lvgl.yaml **发送** 命令到 Home Assistant ← 当按钮被按下时
+# =============================================================================
+
+
+# =============================================================================
+# 常规传感器（数值型）
+sensor:
+
+  # ===========================================================================
+  # 传感器：办公室温度（室内）
+  # ===========================================================================
+  #   屏幕左上角的 "temperatures" 标签
+  #   格式："室外° / 室内°"（例如："15° / 22°"）
+  #
+  # 工作原理：
+  #   当 Home Assistant 中的办公室温度变化时，
+  #   此传感器接收新值并更新标签文本。
+  #   它将室外温度（来自下方另一个传感器）与此值组合。
+  #
+  # 关联 UI 元素：
+  #   lvgl.yaml → temperatures 标签（id: temperatures）
+  # ===========================================================================
+  - platform: homeassistant
+    entity_id: sensor.cleargras_cn_blt_3_u5c2qgggk400_dk1_temperature_p_2_1
+    id: office_temperature
+    on_value:
+      - lvgl.label.update:
+          id: temperatures
+          text:
+            format: "%d° / %d°"
+            args: [ '(int)round(id(outdoor_temperature).state)', '(int)round(x)' ]
+
+  # ===========================================================================
+  # 传感器：室外温度
+  # ===========================================================================
+  #   屏幕左上角的 "temperatures" 标签
+  #   格式："室外° / 室内°"（例如："15° / 22°"）
+  #
+  # 工作原理：
+  #   当 Home Assistant 中的室外温度变化时，
+  #   此传感器接收新值并更新标签文本。
+  #   它将此值与办公室温度（来自上方传感器）组合。
+  #
+  # 注意：两个温度传感器更新同一个标签。
+  #       任一温度变化都会刷新显示两个当前值。
+  #
+  # 关联 UI 元素：
+  #   lvgl.yaml → temperatures 标签（id: temperatures）
+  # ===========================================================================
+  - platform: homeassistant
+    entity_id: sensor.xiamen_temperature
+    id: outdoor_temperature
+    on_value:
+      - lvgl.label.update:
+          id: temperatures
+          text:
+            format: "%d° / %d°"
+            args: [ '(int)round(x)', '(int)round(id(office_temperature).state)' ]
+
+
+
+# =============================================================================
+# 二进制传感器（开/关状态）
+binary_sensor:
+
+  # ===========================================================================
+  # 传感器：小米插座1开关
+  # ===========================================================================
+  - platform: homeassistant
+    id: chuangmi_socket1_status
+    entity_id: switch.chuangmi_cn_125697630_m3_on_p_2_1
+    trigger_on_initial_state: true
+    on_state:
+      then:
+        lvgl.widget.update:
+          id: chuangmi_socket1_button
+          state:
+            checked: !lambda return x;
+
+  # ===========================================================================
+  # 传感器：小米插座2开关
+  # ===========================================================================
+  - platform: homeassistant
+    id: chuangmi_socket2_status
+    entity_id: switch.chuangmi_cn_125796823_m3_on_p_2_1
+    trigger_on_initial_state: true
+    on_state:
+      then:
+        lvgl.widget.update:
+          id: chuangmi_socket2_button
+          state:
+            checked: !lambda return x;
+
+  # ===========================================================================
+  # 传感器：小米插座3开关
+  # ===========================================================================
+  - platform: homeassistant
+    id: chuangmi_socket3_status
+    entity_id: switch.chuangmi_cn_125520813_m3_on_p_2_1
+    trigger_on_initial_state: true
+    on_state:
+      then:
+        lvgl.widget.update:
+          id: chuangmi_socket3_button
+          state:
+            checked: !lambda return x;
+
+  # ===========================================================================
+  # 传感器：客厅大灯
+  # 关联 UI 元素：
+  #   lvgl.yaml → network_rack_button
+  # ===========================================================================
+  - platform: homeassistant
+    id: opple_light_status
+    entity_id: light.opple_cn_246935575_bydceiling_s_2_light
+    attribute: brightness_pct
+    trigger_on_initial_state: true
+    on_state:
+      then:
+        lvgl.widget.update:
+          id: house_light_arc
+          state:
+            checked: !lambda return (int)x;

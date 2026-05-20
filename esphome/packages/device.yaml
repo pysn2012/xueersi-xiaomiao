@@ -1,0 +1,47 @@
+esp32:
+  variant: esp32
+  flash_size: 4MB
+  framework:
+    type: esp-idf
+    advanced:
+      minimum_chip_revision: '3.1'    # 对应 ESP32-D0WD-V3
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  min_version: 2025.5.0
+  name_add_mac_suffix: true
+
+ota:
+  platform: esphome
+
+api:
+
+logger:
+
+psram:
+
+# 无屏幕背光
+
+# SPI总线
+spi:
+  - id: lcd_spi
+    clk_pin: GPIO18
+    mosi_pin: GPIO23
+
+# 显示屏(ST7735)
+display:
+  - platform: mipi_spi
+    id: tft_display
+    model: ST7735
+    spi_id: lcd_spi
+    invert_colors: false
+    cs_pin: 5
+    dc_pin: 4
+    reset_pin: 19
+    update_interval: never
+    auto_clear_enabled: false
+    rotation: 90
+    dimensions:
+      width: 160
+      height: 128

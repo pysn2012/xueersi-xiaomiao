@@ -1,0 +1,20 @@
+# xiaomiao
+substitutions:
+  name: "xiaomiao"
+  friendly_name: "xiaomiao-esphome"
+
+# Wifi
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+# 导入组件
+packages:
+  device: !include packages/device.yaml
+  sensors: !include packages/sensors.yaml
+  lvgl: !include packages/lvgl.yaml
+  time: !include packages/time.yaml
+  network: !include packages/network.yaml
+  fonts: !include packages/fonts.yaml
+  icons: !include packages/icons.yaml
+  button: !include packages/button.yaml

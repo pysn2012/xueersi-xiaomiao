@@ -1,0 +1,72 @@
+# 工作流名称
+name: build ESP32-CYB2.4
+
+# 触发条件
+on:
+  workflow_dispatch:  # 手动触发（推荐）
+
+jobs:
+  compile-esphome:
+    runs-on: ubuntu-latest
+    steps:
+      # 步骤1：拉取仓库代码
+      - name: 拉取仓库代码
+        uses: actions/checkout@v4
+
+      # 步骤2：配置 Python 环境
+      - name: 配置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 步骤3：安装 ESPHome
+      - name: 安装 ESPHome
+        run: |
+          python -m pip install --upgrade pip
+          pip install esphome
+
+      # 关键步骤：动态生成 secrets.yaml
+      - name: Generate secrets.yaml
+        run: |
+          cat > esp32-cyb24/secrets.yaml <<EOF
+          wifi_ssid: "${{ secrets.WIFI_SSID }}"
+          wifi_password: "${{ secrets.WIFI_PASSWORD }}"
+          EOF
+
+      # 步骤4：编译固件
+      - name: 编译固件
+        run: |
+          # 进入配置文件目录
+          cd esp32-cyb24
+          # 编译固件，生成bin文件
+          esphome compile esp32-cyb24.yaml
+
+      # 步骤5：动态查找编译产物
+      - name: 动态查找 firmware.bin
+        id: find_fw
+        run: |
+          SEARCH_ROOT="esp32-cyb24/.esphome/build"   # 与编译目录对应
+          FIRMWARE=$(find "$SEARCH_ROOT" -name "firmware.bin" | head -n 1)
+          OTA=$(find "$SEARCH_ROOT" -name "firmware.ota.bin" | head -n 1)
+          FACTORY=$(find "$SEARCH_ROOT" -name "firmware.factory.bin" | head -n 1)
+
+          if [[ -z "$FIRMWARE" ]]; then
+            echo "::error::未找到 firmware.bin，请检查编译是否成功"
+            exit 1
+          fi
+
+          echo "FIRMWARE=$FIRMWARE" >> $GITHUB_OUTPUT
+          echo "OTA=$OTA" >> $GITHUB_OUTPUT
+          echo "FACTORY=$FACTORY" >> $GITHUB_OUTPUT
+
+      # 步骤6：上传固件
+      - name: 上传固件到 Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp32-cyb24-${{ github.sha }}
+          path: |
+            ${{ steps.find_fw.outputs.FIRMWARE }}
+            ${{ steps.find_fw.outputs.OTA }}
+            ${{ steps.find_fw.outputs.FACTORY }}
+            esp32-cyb24/esp32-cyb24.yaml
+          retention-days: 30

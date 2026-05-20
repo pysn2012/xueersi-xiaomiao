@@ -1,0 +1,15 @@
+font:
+  - file:
+      type: gfonts                  # 字体来源：谷歌字体
+      family: "Noto Sans SC"        # 字体家族：思源黑体（简体中文）
+      weight: 400                   # 字重：常规（Regular，400）
+      italic: false                 # 非斜体
+    id: cn_font                     # 字体唯一ID
+    size: 12                        # 字号：36
+    glyphs: ${allowed_characters}   # 只加载指定字符
+    ignore_missing_glyphs: true     # 忽略字体中缺失的字符，不报错
+
+lvgl:
+  style_definitions:
+    - id: roboto15_style
+      text_font: cn_font
