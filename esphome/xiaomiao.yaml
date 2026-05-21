@@ -12,9 +12,4 @@ wifi:
 packages:
   device: !include packages/device.yaml
   sensors: !include packages/sensors.yaml
-  lvgl: !include packages/lvgl.yaml
-  time: !include packages/time.yaml
-  network: !include packages/network.yaml
   fonts: !include packages/fonts.yaml
-  icons: !include packages/icons.yaml
-  button: !include packages/button.yaml
