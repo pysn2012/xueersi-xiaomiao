@@ -2,7 +2,7 @@
 substitutions:
   name: "xiaomiao"
   friendly_name: "xiaomiao-esphome"
-  allowed_characters: "0123456789:.-°C% ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_.,;:!?@#$%^&*()[]{}<>/\\|+=~`\"' "
+  allowed_characters: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°-_.:,;!?@#$%^&*()[]{}<>/\\|+=~`\"' "
 
 # Wifi
 wifi:
