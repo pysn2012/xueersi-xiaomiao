@@ -43,8 +43,8 @@ display:
     auto_clear_enabled: true
     rotation: 90
     dimensions:
-      width: 160
-      height: 128
+      width: 128
+      height: 160
     lambda: |-
       it.fill(Color::BLACK);
 
