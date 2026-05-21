@@ -40,7 +40,7 @@ sensor:
     id: adc_light
     name: "Light"
     update_interval: 10s
-    attenuation: 11db   # 3.3V 满量程推荐 11db
+    attenuation: 12db   # 3.3V 满量程推荐 12db
     filters:
       - calibrate_linear:
           # 按实际校准：0V→最暗，3.3V→最亮
@@ -55,7 +55,7 @@ sensor:
     pin: GPIO39
     id: adc_ntc
     update_interval: 10s
-    attenuation: 11db
+    attenuation: 12db
 
   - platform: resistance
     id: ntc_resistance
