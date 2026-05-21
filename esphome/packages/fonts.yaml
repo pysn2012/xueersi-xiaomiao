@@ -9,7 +9,4 @@ font:
     glyphs: ${allowed_characters}   # 只加载指定字符
     ignore_missing_glyphs: true     # 忽略字体中缺失的字符，不报错
 
-lvgl:
-  style_definitions:
-    - id: roboto15_style
-      text_font: cn_font
+

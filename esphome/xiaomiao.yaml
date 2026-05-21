@@ -2,6 +2,7 @@
 substitutions:
   name: "xiaomiao"
   friendly_name: "xiaomiao-esphome"
+  allowed_characters: "0123456789:.-°C%TempLighWiFIP"
 
 # Wifi
 wifi:
@@ -13,3 +14,9 @@ packages:
   device: !include packages/device.yaml
   sensors: !include packages/sensors.yaml
   fonts: !include packages/fonts.yaml
+
+# 时间同步（需连 Home Assistant）
+time:
+  - platform: homeassistant
+    id: ha_time
+    timezone: Asia/Shanghai

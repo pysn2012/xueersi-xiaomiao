@@ -26,6 +26,7 @@ sensor:
   - platform: copy
     source_id: wifi_signal_db
     name: "Wifi Strength"
+    id: wifi_strength
     filters:
       - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
     unit_of_measurement: "%"
@@ -39,7 +40,7 @@ sensor:
     id: adc_light
     name: "Light"
     update_interval: 10s
-    attenuation: 12db   # 3.3V 满量程推荐 12db
+    attenuation: 11db   # 3.3V 满量程推荐 11db
     filters:
       - calibrate_linear:
           # 按实际校准：0V→最暗，3.3V→最亮
@@ -54,7 +55,7 @@ sensor:
     pin: GPIO39
     id: adc_ntc
     update_interval: 10s
-    attenuation: 12db
+    attenuation: 11db
 
   - platform: resistance
     id: ntc_resistance
@@ -80,4 +81,5 @@ text_sensor:
   - platform: wifi_info
     ip_address:
       name: IP Address
+      id: ip_address
       icon: mdi:ip-network

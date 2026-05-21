@@ -39,9 +39,52 @@ display:
     cs_pin: 5
     dc_pin: 4
     reset_pin: 19
-    update_interval: never
-    auto_clear_enabled: false
+    update_interval: 1s
+    auto_clear_enabled: true
     rotation: 90
     dimensions:
       width: 160
       height: 128
+    lambda: |-
+      it.fill(Color::BLACK);
+
+      // 第一行：时间（绿色，醒目）
+      auto now = id(ha_time).now();
+      if (now.is_valid()) {
+        it.printf(80, 16, id(cn_font), Color::GREEN, TextAlign::CENTER,
+                  "%02d:%02d:%02d", now.hour, now.minute, now.second);
+      } else {
+        it.print(80, 16, id(cn_font), Color::GREEN, TextAlign::CENTER, "--:--:--");
+      }
+
+      // 第二行：温度
+      if (id(board_temp).has_state()) {
+        it.printf(80, 40, id(cn_font), Color::WHITE, TextAlign::CENTER,
+                  "Temp: %.1f°C", id(board_temp).state);
+      } else {
+        it.print(80, 40, id(cn_font), Color::WHITE, TextAlign::CENTER, "Temp: --.-°C");
+      }
+
+      // 第三行：光照强度
+      if (id(adc_light).has_state()) {
+        it.printf(80, 60, id(cn_font), Color::WHITE, TextAlign::CENTER,
+                  "Light: %.0f%%", id(adc_light).state);
+      } else {
+        it.print(80, 60, id(cn_font), Color::WHITE, TextAlign::CENTER, "Light: ---%");
+      }
+
+      // 第四行：WiFi 信号
+      if (id(wifi_strength).has_state()) {
+        it.printf(80, 80, id(cn_font), Color::WHITE, TextAlign::CENTER,
+                  "WiFi: %.0f%%", id(wifi_strength).state);
+      } else {
+        it.print(80, 80, id(cn_font), Color::WHITE, TextAlign::CENTER, "WiFi: ---%");
+      }
+
+      // 第五行：IP 地址
+      if (id(ip_address).has_state()) {
+        it.printf(80, 100, id(cn_font), Color::WHITE, TextAlign::CENTER,
+                  "IP: %s", id(ip_address).state.c_str());
+      } else {
+        it.print(80, 100, id(cn_font), Color::WHITE, TextAlign::CENTER, "IP: ---");
+      }
