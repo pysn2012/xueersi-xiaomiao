@@ -48,13 +48,13 @@ display:
     lambda: |-
       it.fill(Color::BLACK);
 
-      // 第一行：时间（绿色，醒目）
+      // 第一行：时间
       auto now = id(ha_time).now();
       if (now.is_valid()) {
-        it.printf(80, 16, id(cn_font), Color::GREEN, TextAlign::CENTER,
+        it.printf(80, 16, id(cn_font), Color::WHITE, TextAlign::CENTER,
                   "%02d:%02d:%02d", now.hour, now.minute, now.second);
       } else {
-        it.print(80, 16, id(cn_font), Color::GREEN, TextAlign::CENTER, "--:--:--");
+        it.print(80, 16, id(cn_font), Color::WHITE, TextAlign::CENTER, "--:--:--");
       }
 
       // 第二行：温度
