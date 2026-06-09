@@ -8,6 +8,10 @@ substitutions:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
+  ap:
+    ssid: "sky-xiaomiao-esphome"
+    password: "12345678"
+    ap_timeout: 60s
 
 # 导入组件
 packages:
